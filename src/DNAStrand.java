@@ -11,6 +11,10 @@ public class DNAStrand implements KData {
 		this.DNA = DNA;
 	}
 
+	public String getDNA() {
+		return DNA;
+	}
+
 	@Override
 	public double distance(Object toCompare) {
 		DNAStrand s = (DNAStrand) toCompare;
