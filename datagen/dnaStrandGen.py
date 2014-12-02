@@ -7,11 +7,11 @@ STRAND_DIIF_MIN = 0
 
 def strandGen(dna, varlen, size):
     dnaLen = len(dna)
-    indexToChange = random.sample(xrange(dnaLen), varlen)
 
     retStrands = []
     for y in xrange(size):
         retStrand = ''
+        indexToChange = random.sample(xrange(dnaLen), varlen)
         for x in xrange(dnaLen):
             if x in indexToChange:
                 retStrand += random.choice('ACGT'.replace(dna[x], ''))
