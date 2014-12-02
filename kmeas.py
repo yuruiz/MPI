@@ -93,7 +93,7 @@ def assignLable(dataset, centroids):
     return labellist
 
 def usage():
-    print "Usage: %s <k> <datafilename>"
+    print "Usage: %s <k> <datafilename>" % sys.argv[0]
 
 
 def calDist(data1, data2):

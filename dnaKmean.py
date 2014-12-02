@@ -7,6 +7,8 @@ from operator import itemgetter
 
 MAX_ITER = 100000
 
+MIN_DIFF = 8
+
 
 def kmeas(k, dataset):
 
@@ -33,45 +35,61 @@ def kmeas(k, dataset):
 
 def generateCentroid(dataset, k):
     centroids = []
-    maxCom = []
-    minCom = []
 
+    setSize = len(dataset)
 
-    numFeature = len(dataset[0])
-
-    components = zip(*dataset)
-
-    for component in components:
-        maxCom.append(int(max(component)))
-        minCom.append(int(min(component)))
+    print setSize
 
     for x in xrange(k):
-        centroid = []
-        for y in xrange(numFeature):
-            centroid.append(random.randrange(minCom[y], maxCom[y]))
-
-    centroids.append(centroid)
+        index = 0
+        while True:
+            index = random.randrange(setSize)
+            if validCentroid(dataset[index], centroids):
+                break
+        centroids.append(dataset[index])
 
     return centroids
 
+def validCentroid(strand, centroids):
+    for centroid in centroids:
+        if diff(centroid, strand) <= MIN_DIFF:
+            return False
+    return True
+
+def diff(str1, str2):
+    strlen = len(str1)
+    diffcount = 0
+
+    for x in xrange(strlen):
+        if str1[x] != str2[x]:
+            diffcount += 1
+
+    return diffcount
+
+
 def calCentroid(dataset, labels, k):
     numFeature = len(dataset[0])
-    clusterList = [[0 for y in xrange(numFeature)] for x in xrange(k)]
-    clusterCount = [0 for x in xrange(k)]
-    centroids = [[0 for y in xrange(numFeature)] for x in xrange(k)]
+
+    clusterList = [[] for x in xrange(k)]
 
     for x in xrange(len(dataset)):
-        cluster = clusterList[labels[x]]
-        data = dataset[x]
-        clusterCount[labels[x]] += 1
-        for y in xrange(numFeature):
-            cluster[y] += data[y]
+        clusterList[labels[x]].append(list(dataset[x]))
+
+    CharMap = ['A', 'C', 'G', 'T']
+    centroids = []
 
     for x in xrange(k):
+        centroid = ''
+        components = zip(*clusterList[x])
         for y in xrange(numFeature):
-            if clusterCount[x] == 0:
-                break
-            centroids[x][y] = clusterList[x][y] / clusterCount[x]
+            charCount = []
+            charCount.append(components[y].count('A'))
+            charCount.append(components[y].count('C'))
+            charCount.append(components[y].count('G'))
+            charCount.append(components[y].count('T'))
+
+            centroid += CharMap[charCount.index(max(charCount))]
+        centroids.append(centroid)
 
     return centroids
 
@@ -82,27 +100,19 @@ def stopIteration(centroids, lastCentroids, iterCount):
     return centroids == lastCentroids
 
 def assignLable(dataset, centroids):
-
     labellist = []
 
     for data in dataset:
         templist = []
         for centroid in centroids:
-            templist.append(calDist(data, centroid))
+            templist.append(diff(data, centroid))
         labellist.append(min(enumerate(templist), key=itemgetter(1))[0])
     return labellist
 
 def usage():
-    print "Usage: %s <k> <datafilename>"
+    print "Usage: %s <k> <datafilename>" % sys.argv[0]
 
 
-def calDist(data1, data2):
-    disPart = 0
-
-    for x in xrange(len(data1)):
-        disPart += (data1[x] - data2[x])**2
-
-    return math.sqrt(disPart)
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -112,9 +122,11 @@ if __name__ == '__main__':
     k = int(sys.argv[1])
     filename = sys.argv[2]
 
+    datasets = []
     with open(filename, 'rb') as datafile:
         datalines = csv.reader(datafile)
-        datasets = [[dataline] for dataline in datalines]
+        for dataline in datalines:
+            datasets.extend(dataline)
 
     centroids = kmeas(k, datasets)
     print centroids
