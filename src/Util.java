@@ -3,11 +3,20 @@ import java.util.List;
 
 public class Util {
 
+	/**
+	 * Get the centroid of a list of data
+	 * 
+	 * @param samples
+	 * @return
+	 */
 	public static KData getCentroid(List<KData> samples) {
 
 		double xSum = 0d;
 		double ySum = 0d;
 
+		/*
+		 * If the data is a list of 2d points, simply calculate the mean
+		 */
 		if (samples.get(0) instanceof Point) {
 			for (KData d : samples) {
 				Point p = (Point) d;
@@ -18,15 +27,26 @@ public class Util {
 			return new Point(xSum / samples.size(), ySum / samples.size());
 		}
 
+		/*
+		 * If data is a list of DNA strands, count the number of appearances of
+		 * each kind of base at each position, assign the base as the one
+		 * appears the most
+		 */
 		if (samples.get(0) instanceof DNAStrand) {
 			DNAStrand dna = (DNAStrand) samples.get(0);
 			int length = dna.getDNA().length();
 
+			/*
+			 * Four count array for four kinds of base
+			 */
 			Count A = new Count('A', length);
 			Count G = new Count('C', length);
 			Count C = new Count('C', length);
 			Count T = new Count('T', length);
 
+			/*
+			 * Count the appearance of bases
+			 */
 			for (KData d : samples) {
 				DNAStrand s = (DNAStrand) d;
 				String strand = s.getDNA();
@@ -46,6 +66,9 @@ public class Util {
 				}
 			}
 
+			/*
+			 * Assign the base that appears most frequent to a position
+			 */
 			List<Count> list = new ArrayList<Count>();
 			StringBuilder b = new StringBuilder();
 			for (int i = 0; i < length; i++) {
@@ -71,6 +94,12 @@ public class Util {
 
 	}
 
+	/**
+	 * Private helper class of encapsulating base and its count
+	 * 
+	 * @author siyuwei
+	 *
+	 */
 	private static class Count {
 		private char base;
 		private int[] count;
