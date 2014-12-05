@@ -14,6 +14,10 @@ public class Util {
 		double xSum = 0d;
 		double ySum = 0d;
 
+		if (samples.size() == 0) {
+			return null;
+		}
+
 		/*
 		 * If the data is a list of 2d points, simply calculate the mean
 		 */
@@ -40,7 +44,7 @@ public class Util {
 			 * Four count array for four kinds of base
 			 */
 			Count A = new Count('A', length);
-			Count G = new Count('C', length);
+			Count G = new Count('G', length);
 			Count C = new Count('C', length);
 			Count T = new Count('T', length);
 
@@ -54,12 +58,16 @@ public class Util {
 					switch (strand.charAt(i)) {
 					case 'A':
 						A.count[i]++;
+						break;
 					case 'G':
 						G.count[i]++;
+						break;
 					case 'C':
 						C.count[i]++;
+						break;
 					case 'T':
 						T.count[i]++;
+						break;
 					default:
 						break;
 					}
@@ -70,14 +78,21 @@ public class Util {
 			 * Assign the base that appears most frequent to a position
 			 */
 			List<Count> list = new ArrayList<Count>();
+			list.add(A);
+			list.add(G);
+			list.add(C);
+			list.add(T);
+			
+			
 			StringBuilder b = new StringBuilder();
 			for (int i = 0; i < length; i++) {
 				int max = 0;
 				char base = ' ';
 				for (int j = 0; j < list.size(); j++) {
+					//System.out.println(list.get(j).base + " " + list.get(j).count[i]);
 					if (list.get(j).count[i] > max) {
 						max = list.get(j).count[i];
-						base = list.get(i).base;
+						base = list.get(j).base;
 					}
 				}
 				if (base == ' ') {

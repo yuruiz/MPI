@@ -6,6 +6,7 @@
 public class DNAStrand implements KData {
 
 	private String DNA;
+	private KData centroid;
 
 	public DNAStrand(String DNA) {
 		this.DNA = DNA;
@@ -25,5 +26,35 @@ public class DNAStrand implements KData {
 			}
 		}
 		return dist;
+	}
+
+	@Override
+	public KData getCentroid() {
+		return centroid;
+	}
+
+	@Override
+	public void setCentroid(KData d) {
+		this.centroid = d;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof DNAStrand)) {
+			return false;
+		}
+
+		DNAStrand d = (DNAStrand) o;
+		return d.DNA.equals(DNA);
+	}
+
+	@Override
+	public int hashCode() {
+		return DNA.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "Strand: " + DNA;
 	}
 }
