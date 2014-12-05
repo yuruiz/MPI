@@ -1,0 +1,15 @@
+For dataSetGen.py, the command should be as below:
+
+dataSetGen.py <k> <Num> <output file>
+k: number of centroid
+Num: number of points in each centroid
+Output File: The name of the output file
+
+For dnaStrandGen.py, the comm shoud be as below:
+
+dnaStrandGen.py <k> <length> <Num> <output_file>
+k: number of centroid
+length: lengh of strands
+Num: number of points in each centroid
+Output File: The name of the output file
+
